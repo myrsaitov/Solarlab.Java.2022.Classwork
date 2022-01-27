@@ -1,0 +1,22 @@
+server:
+  port: ${PORT_TO_EXPOSE:8081}
+
+logging:
+  level:
+    ROOT: INFO
+    org.springframework: INFO
+
+spring:
+  application:
+    name: study
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  jackson:
+    date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
+
+springfox:
+  documentation:
+    swagger:
+      v2:
+        path: /v3/api-docs
