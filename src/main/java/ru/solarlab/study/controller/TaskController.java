@@ -7,79 +7,86 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import ru.solarlab.study.dto.TaskDto;
+import ru.solarlab.study.dto.TaskCreateDto;
+import ru.solarlab.study.dto.TaskUpdateDto;
 import ru.solarlab.study.service.TaskService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Controller
 @RequestMapping
 @RequiredArgsConstructor
-@Tag(name = "TaskController", description = "The TaskController API")
+@Tag(name = "TaskController", description = "API контролера по работе с задачами")
+@Validated
 public class TaskController {
 
     private final TaskService taskService;
 
-    @Operation(description = "Get tasks")
+    @Operation(description = "Получение списка задач")
     @GetMapping(
             value = "/v1/tasks",
-            produces = { "application/json" }
+            produces = {"application/json"}
     )
-    public ResponseEntity<List<TaskDto>> getTasks(@NotNull @Parameter(description = "limit", required = true) @Valid @RequestParam(value = "limit", required = true) Integer limit) {
+    public ResponseEntity<List<TaskDto>> getTasks(
+            @Parameter(description = "Количество элементов на странице")
+            @Min(0) @Max(20) @RequestParam(value = "limit", required = false) Integer limit) {
         return ResponseEntity.ok(taskService.getTasks(limit));
     }
 
-    @Operation(description = "Get task")
+    @Operation(description = "Получение задачи")
     @GetMapping(
             value = "/v1/tasks/{taskId}",
-            produces = { "application/json" }
+            produces = {"application/json"}
     )
-    public ResponseEntity<TaskDto> getTask(@Parameter(description = "The id of task", required = true) @PathVariable Integer taskId) {
+    public ResponseEntity<TaskDto> getTask(
+            @Parameter(description = "Идентификатор задачи", required = true)
+            @PositiveOrZero @PathVariable("taskId") int taskId) {
         return ResponseEntity.ok(taskService.getById(taskId));
     }
 
-    @Operation(description = "Update a task")
+    @Operation(description = "Обновление задачи")
     @PutMapping(
             value = "/v1/tasks/{taskId}",
-            produces = { "application/json" },
-            consumes = { "application/json" }
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
-    public ResponseEntity<TaskDto> updateTask(@Parameter(description = "The id of task",required=true) @PathVariable("taskId") Integer taskId,@Parameter @Valid @RequestBody(required = false) TaskDto dto) {
-        return ResponseEntity.ok(taskService.update(taskId, dto));
+    public ResponseEntity<TaskDto> updateTask(
+            @Parameter(description = "Идентификатор задачи", required = true)
+            @PositiveOrZero @PathVariable("taskId") int taskId,
+            @Parameter(description = "Запрос на обновление задачи")
+            @Valid @RequestBody(required = false) TaskUpdateDto request) {
+        return ResponseEntity.ok(taskService.update(taskId, request));
     }
 
 
-    @Operation(description = "Delete a task")
+    @Operation(description = "Удаление задачи")
     @DeleteMapping(
             value = "/v1/tasks/{taskId}"
     )
-    public ResponseEntity<Void> deleteTask(@Parameter(description = "The id of task to delete",required=true) @PathVariable("taskId") Integer taskId) {
+    public ResponseEntity<Void> deleteTask(
+            @Parameter(description = "Идентификатор задачи для удаления", required = true)
+            @PositiveOrZero @PathVariable("taskId") int taskId) {
         taskService.deleteById(taskId);
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(description = "Create task")
+    @Operation(description = "Создание задачи")
     @PostMapping(
             value = "/v1/tasks",
-            produces = { "application/json" },
-            consumes = { "application/json" }
-
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
-    public ResponseEntity<TaskDto> createTask(@Parameter @Valid @RequestBody(required = false) TaskDto dto){
-        return new ResponseEntity<>(taskService.create(dto), HttpStatus.CREATED);
+    public ResponseEntity<TaskDto> createTask(
+            @Parameter(description = "Запрос на создание задачи")
+            @Valid @RequestBody TaskCreateDto request) {
+        return new ResponseEntity<>(taskService.create(request), HttpStatus.CREATED);
     }
-
-
-
 
 }
