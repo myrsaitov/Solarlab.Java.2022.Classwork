@@ -3,12 +3,16 @@ package ru.solarlab.study.service;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.solarlab.study.dto.TaskCreateDto;
 import ru.solarlab.study.dto.TaskDto;
 import ru.solarlab.study.dto.TaskUpdateDto;
 import ru.solarlab.study.entity.Task;
 import ru.solarlab.study.mapper.TaskMapper;
+import ru.solarlab.study.repository.TaskRepository;
 import ru.solarlab.study.repository.TaskRepository;
 
 import java.util.List;
