@@ -24,6 +24,9 @@ spring:
   #jpa.hibernate.ddl-auto: update
   jpa.database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+secure:
+  signingKey: oauth-sig-key
+
 springfox:
   documentation:
     swagger:

@@ -1,7 +1,6 @@
 package ru.solarlab.study.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,23 +9,39 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.client.ClientCredentialsTokenEndpointFilter;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
+/**
+ * Конфигурация встроенного сервиса авторизации
+ */
 @Configuration
 @EnableAuthorizationServer
-public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdapter {
+public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
+
+    /** Шифратор паролей пользователей */
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    /** Менеджер аутентификации */
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    /** JWT конвертер oauth токенов */
+    @Autowired
+    private JwtAccessTokenConverter jwtAccessTokenConverter;
 
+
+    /** Конфигурация модулей auth сервиса */
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
-        endpoints.authenticationManager(authenticationManager);
+        endpoints
+                .tokenStore(new JwtTokenStore(jwtAccessTokenConverter))
+                .accessTokenConverter(jwtAccessTokenConverter)
+                .authenticationManager(authenticationManager);
     }
 
+    /** Конфигурация security auth сервиса */
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         security
@@ -35,6 +50,7 @@ public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdap
                 .allowFormAuthenticationForClients();
     }
 
+    /** Конфигурация in-memory клиентов auth сервиса. TODO: Попробовать вынести хранение в БД + хардкод в sql скрипты */
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients
