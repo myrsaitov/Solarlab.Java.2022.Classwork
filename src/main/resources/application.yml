@@ -14,6 +14,12 @@ spring:
       matching-strategy: ant_path_matcher
   jackson:
     date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/task_db?currentSchema=task
+    username: task_user
+    password: task_password
+  jpa.hibernate.ddl-auto: create
 
 springfox:
   documentation:
