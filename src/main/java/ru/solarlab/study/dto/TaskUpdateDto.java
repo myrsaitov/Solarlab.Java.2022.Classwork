@@ -1,13 +1,14 @@
 package ru.solarlab.study.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
-import ru.solarlab.study.dto.Status;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.solarlab.study.validation.CapitalLetter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
 import java.time.OffsetDateTime;
 
 @Getter
@@ -16,10 +17,6 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @Schema(description = "Запрос на обновление задачи")
 public class TaskUpdateDto {
-    @PositiveOrZero
-    @Schema(description = "Идентификатор")
-    private Integer id;
-
     @NotBlank
     @CapitalLetter
     @Schema(description = "Наименование")
