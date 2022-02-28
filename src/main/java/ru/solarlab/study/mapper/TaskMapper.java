@@ -16,9 +16,9 @@ public interface TaskMapper {
 
     TaskDto taskToTaskDto(Task entity);
 
-    Task taskUpdateRequestToTaskView(TaskUpdateDto dto, Integer id);
+    Task taskUpdateRequestToTaskView(TaskUpdateDto dto, Integer id, String owner);
 
-    Task toTask(TaskCreateDto dto);
+    Task toTask(TaskCreateDto dto, String owner);
 
     @AfterMapping
     default void afterMappingFromCreate(@MappingTarget Task target, TaskCreateDto source) {

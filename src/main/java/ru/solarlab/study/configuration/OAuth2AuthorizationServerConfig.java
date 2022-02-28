@@ -58,7 +58,7 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
                 .withClient("task-client").secret(passwordEncoder.encode("123456789"))
                 .authorizedGrantTypes("password", "authorization_code", "refresh_token")
                 .authorities("MAIN_CLIENT")
-                .scopes("read_info")
+                .scopes("task_info")
                 .resourceIds("oauth2-resource")
                 .redirectUris("http://localhost:8081/login")
                 .accessTokenValiditySeconds(120)

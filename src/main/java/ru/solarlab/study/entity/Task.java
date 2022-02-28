@@ -27,6 +27,9 @@ public class Task {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "owner", nullable = false)
+    private String owner;
+
     @Column(name = "started_at", nullable = false)
     private OffsetDateTime startedAt;
 

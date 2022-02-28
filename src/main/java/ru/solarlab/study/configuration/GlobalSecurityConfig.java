@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -25,6 +26,8 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 @Configuration
 /** Если возникают проблемы в отладке безопасности, то можно прокинуть в аннотацию EnableWebSecurity параметр debug = true, для подробного логирования метаданных по входящим запросам и фильтрам */
 @EnableWebSecurity(debug = false)
+/** EnableGlobalMethodSecurity обязательно необходит для работы аннотации PreAuhotrize */
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class GlobalSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /** Ключ для симметричного шифрования JWT токена */

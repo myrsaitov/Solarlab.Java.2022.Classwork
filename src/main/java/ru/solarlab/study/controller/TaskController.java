@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -81,6 +82,7 @@ public class TaskController {
     @DeleteMapping(
             value = "/v1/tasks/{taskId}"
     )
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteTask(
             @Parameter(description = "Идентификатор задачи для удаления", required = true)
             @PositiveOrZero @PathVariable("taskId") int taskId) {

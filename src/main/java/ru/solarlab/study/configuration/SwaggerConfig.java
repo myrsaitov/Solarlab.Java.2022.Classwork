@@ -24,7 +24,7 @@ public class SwaggerConfig {
                                                 .password(new OAuthFlow()
                                                         .refreshUrl("http://localhost:8081/oauth/token")
                                                         .tokenUrl("http://localhost:8081/oauth/token")
-                                                        .scopes(new Scopes().addString("read_info", "scope для чтения данных"))
+                                                        .scopes(new Scopes().addString("task_info", "scope задач"))
                                                 ))))
                 .info(new Info().title("Study Service")
                         .description("Study Service")

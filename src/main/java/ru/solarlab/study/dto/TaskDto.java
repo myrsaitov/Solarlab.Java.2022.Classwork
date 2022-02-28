@@ -20,6 +20,9 @@ public class TaskDto {
     @Schema(description = "Наименование")
     private String name;
 
+    @Schema(description = "Владелец")
+    private String owner;
+
     @Schema(description = "Дата начала")
     private OffsetDateTime startedAt;
 
