@@ -56,7 +56,7 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
                 .allowFormAuthenticationForClients();
     }
 
-    /** Конфигурация in-memory клиентов auth сервиса. TODO: Попробовать вынести хранение в БД + хардкод в sql скрипты */
+    /** Конфигурация in-memory клиентов auth сервиса. */
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients
