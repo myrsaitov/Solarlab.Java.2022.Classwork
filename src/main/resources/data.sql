@@ -27,6 +27,6 @@ INSERT INTO users (username, email, enabled, password) VALUES ('user2', null, tr
 
 
 -- authorities
-INSERT INTO task.authorities (id, authority, username) VALUES (1, 'ADMIN', 'admin');
-INSERT INTO task.authorities (id, authority, username) VALUES (2, 'USER', 'user1');
-INSERT INTO task.authorities (id, authority, username) VALUES (3, 'USER', 'user2');
+INSERT INTO authorities (id, authority, username) VALUES (1, 'ADMIN', 'admin');
+INSERT INTO authorities (id, authority, username) VALUES (2, 'USER', 'user1');
+INSERT INTO authorities (id, authority, username) VALUES (3, 'USER', 'user2');
