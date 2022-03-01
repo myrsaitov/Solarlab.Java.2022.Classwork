@@ -82,7 +82,7 @@ public class TaskController {
     @DeleteMapping(
             value = "/v1/tasks/{taskId}"
     )
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteTask(
             @Parameter(description = "Идентификатор задачи для удаления", required = true)
             @PositiveOrZero @PathVariable("taskId") int taskId) {

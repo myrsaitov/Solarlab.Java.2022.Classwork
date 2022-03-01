@@ -23,6 +23,11 @@ spring:
     password: postgres
   #jpa.hibernate.ddl-auto: update
   jpa.database-platform: org.hibernate.dialect.PostgreSQLDialect
+  jpa:
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
 
 secure:
   signingKey: oauth-sig-key

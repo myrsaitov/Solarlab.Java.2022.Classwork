@@ -1,5 +1,6 @@
 package ru.solarlab.study.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +22,11 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import ru.solarlab.study.entity.Authority;
+
+import javax.sql.DataSource;
+
 
 /**
  * Глобальная конфигурация безопасности endpoint`ов приложения
@@ -34,6 +42,10 @@ public class GlobalSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${secure.signingKey}")
     private String signingKey;
 
+    /** Драйвер к БД */
+    @Autowired
+    private DataSource dataSource;
+
     /** Менеджер аутентификации */
     @Override
     @Bean
@@ -41,36 +53,11 @@ public class GlobalSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    /** In-memory сервис пользователей. TODO: Попробовать вынести хранение в БД + хардкод в sql скрипты */
+    /** In-memory сервис пользователей. */
     @Bean
     @Override
     protected UserDetailsService userDetailsService() {
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        // администратор
-        manager.createUser(
-                User
-                        .withUsername("admin")
-                        .password(passwordEncoder().encode("password"))
-                        .roles("ADMIN")
-                        .authorities("ADMIN")
-                        .build());
-        // пользователь 1
-        manager.createUser(
-                User
-                        .withUsername("user1")
-                        .password(passwordEncoder().encode("password"))
-                        .roles("USER")
-                        .authorities("USER")
-                        .build());
-        // пользователь 2
-        manager.createUser(
-                User
-                        .withUsername("user2")
-                        .password(passwordEncoder().encode("password"))
-                        .roles("USER")
-                        .authorities("USER")
-                        .build());
-        return manager;
+        return new JdbcUserDetailsManager(this.dataSource);
     }
 
     /** Глобальная конфигурация защиты endpoint`ов */

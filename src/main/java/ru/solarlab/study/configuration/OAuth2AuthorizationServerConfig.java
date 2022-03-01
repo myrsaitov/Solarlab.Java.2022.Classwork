@@ -12,6 +12,8 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
+import javax.sql.DataSource;
+
 /**
  * Конфигурация встроенного сервиса авторизации
  */
@@ -30,6 +32,10 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     /** JWT конвертер oauth токенов */
     @Autowired
     private JwtAccessTokenConverter jwtAccessTokenConverter;
+
+    /** Драйвер к БД */
+    @Autowired
+    private DataSource dataSource;
 
 
     /** Конфигурация модулей auth сервиса */
@@ -54,14 +60,6 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients
-                .inMemory()
-                .withClient("task-client").secret(passwordEncoder.encode("123456789"))
-                .authorizedGrantTypes("password", "authorization_code", "refresh_token")
-                .authorities("MAIN_CLIENT")
-                .scopes("task_info")
-                .resourceIds("oauth2-resource")
-                .redirectUris("http://localhost:8081/login")
-                .accessTokenValiditySeconds(120)
-                .refreshTokenValiditySeconds(240000);
+                .jdbc(dataSource).passwordEncoder(passwordEncoder);
     }
 }
