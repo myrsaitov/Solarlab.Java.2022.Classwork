@@ -1,0 +1,2 @@
+ALTER TABLE IF EXISTS task
+    RENAME TO tasks;

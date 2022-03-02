@@ -20,14 +20,9 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/task_db?currentSchema=task
     username: postgres
-    password: postgres
+    password: password
   #jpa.hibernate.ddl-auto: update
   jpa.database-platform: org.hibernate.dialect.PostgreSQLDialect
-  jpa:
-    defer-datasource-initialization: true
-  sql:
-    init:
-      mode: always
 
 secure:
   signingKey: oauth-sig-key

@@ -19,11 +19,8 @@ import java.util.UUID;
 @Table(name = "authorities")
 public class Authority {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     /** Логин */
+    @Id
     @Column(name = "username")
     private String username;
 

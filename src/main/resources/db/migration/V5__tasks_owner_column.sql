@@ -1,0 +1,1 @@
+ALTER TABLE tasks ADD COLUMN "owner" character varying(255);

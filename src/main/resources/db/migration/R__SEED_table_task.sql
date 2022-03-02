@@ -1,4 +1,4 @@
-TRUNCATE TABLE task CASCADE;
+TRUNCATE TABLE tasks CASCADE;
 
-INSERT INTO task (id, name, started_at, status)
+INSERT INTO tasks (id, name, started_at, status)
 VALUES (1, 'FromMigrationTask', now(), 0);
