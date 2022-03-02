@@ -34,13 +34,9 @@ import javax.sql.DataSource;
 @Configuration
 /** Если возникают проблемы в отладке безопасности, то можно прокинуть в аннотацию EnableWebSecurity параметр debug = true, для подробного логирования метаданных по входящим запросам и фильтрам */
 @EnableWebSecurity(debug = false)
-/** EnableGlobalMethodSecurity обязательно необходит для работы аннотации PreAuhotrize */
+/** EnableGlobalMethodSecurity обязательно необходит для работы аннотации PreAuthorize */
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class GlobalSecurityConfig extends WebSecurityConfigurerAdapter {
-
-    /** Ключ для симметричного шифрования JWT токена */
-    @Value("${secure.signingKey}")
-    private String signingKey;
 
     /** Драйвер к БД */
     @Autowired
@@ -53,7 +49,7 @@ public class GlobalSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    /** In-memory сервис пользователей. */
+    /** Сервис пользователей. */
     @Bean
     @Override
     protected UserDetailsService userDetailsService() {
@@ -62,53 +58,13 @@ public class GlobalSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /** Глобальная конфигурация защиты endpoint`ов */
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/v3/api-docs.yaml", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
-                .antMatchers("/oauth/**", "/login**", "/error**").permitAll()
-                .anyRequest().authenticated();
-
+    protected void configure(HttpSecurity http) {
+        // Отключаем глобальный фильтр Security -> Используем фильтр Resource Server
     }
 
     /** Конфигурация менеджера по аутентификации */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService());
-    }
-
-    /** Бин для шифрования паролей пользователей */
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    /** Кастомный сервис по работе с oauth токенами */
-    @Bean
-    @Primary
-    public DefaultTokenServices tokenServices() {
-        final DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-        defaultTokenServices.setTokenStore(tokenStore());
-        defaultTokenServices.setSupportRefreshToken(true);
-
-        return defaultTokenServices;
-    }
-
-    /** Кастомное хранилище oauth токенов */
-    @Bean
-    public TokenStore tokenStore() {
-        return new JwtTokenStore(accessTokenConverter());
-    }
-
-    /** Кастомный конвертер oauth токенов */
-    @Bean
-    public JwtAccessTokenConverter accessTokenConverter() {
-        final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-
-        DefaultAccessTokenConverter accessTokenConverter = new DefaultAccessTokenConverter();
-        converter.setAccessTokenConverter(accessTokenConverter);
-        converter.setSigningKey(signingKey);
-        return converter;
     }
 }
