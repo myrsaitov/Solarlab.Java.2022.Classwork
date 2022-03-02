@@ -40,6 +40,17 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getTasks(limit));
     }
 
+    @Operation(description = "Получение списка задач по имени")
+    @GetMapping(
+            value = "/v1/tasks-by-name-like",
+            produces = {"application/json"}
+    )
+    public ResponseEntity<List<TaskDto>> getTasksByNameLike(
+            @Parameter(description = "Строка поиска")
+            @RequestParam(value = "nameLike") String nameLike) {
+        return ResponseEntity.ok(taskService.getByNameLike('%'+ nameLike +'%'));
+    }
+
     @Operation(description = "Получение задачи")
     @GetMapping(
             value = "/v1/tasks/{taskId}",

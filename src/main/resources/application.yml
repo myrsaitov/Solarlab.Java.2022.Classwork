@@ -7,6 +7,8 @@ logging:
     org.springframework: INFO
 
 spring:
+  flyway:
+    enabled: false
   application:
     name: study
   mvc:
@@ -17,9 +19,10 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/task_db?currentSchema=task
-    username: task_user
-    password: task_password
-  jpa.hibernate.ddl-auto: create
+    username: postgres
+    password: postgres
+  #jpa.hibernate.ddl-auto: update
+  jpa.database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 springfox:
   documentation:
