@@ -2,6 +2,7 @@ package ru.solarlab.study.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @Schema(description = "Запрос на создание задачи")
 public class TaskCreateDto {
     @NotBlank
