@@ -3,6 +3,7 @@ package ru.solarlab.study.controller;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import ru.solarlab.study.dto.Status;
 import ru.solarlab.study.dto.TaskCreateDto;
@@ -11,6 +12,7 @@ import ru.solarlab.study.dto.TaskUpdateDto;
 import ru.solarlab.study.errors.ValidationErrorResponse;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class TaskControllerTest extends BaseIT {
     private static final TaskDto MIGRATION_TASK_DTO = getTaskDto(1, "FromMigrationTask", null, Status.NEW);
     public static final String STARTED_AT_FIELD = "startedAt";
+    public static final String ID_FIELD = "id";
     public static final String TASKS_URL = "v1/tasks/";
     public static final String TASKS_BY_NAME_URL = "v1/tasks-by-name-like/";
 
@@ -89,11 +92,14 @@ class TaskControllerTest extends BaseIT {
                 .assertThat().statusCode(HttpStatus.SC_CREATED)
                 .extract().as(TaskDto.class);
 
-        assertThat(response)
+        final SoftAssertions softAssertions = new SoftAssertions();
+        softAssertions.assertThat(response)
                 .usingRecursiveComparison()
-                .ignoringFields(STARTED_AT_FIELD)
-                .ignoringCollectionOrder()
-                .isEqualTo(getTaskDto(response.getId(), createTaskDto.getName(), createTaskDto.getStartedAt(), Status.NEW));
+                .ignoringFields(ID_FIELD, STARTED_AT_FIELD)
+                .isEqualTo(getTaskDto(null, createTaskDto.getName(), createTaskDto.getStartedAt(), Status.NEW));
+        softAssertions.assertThat(response.getId()).isGreaterThan(0);
+        softAssertions.assertThat(response.getStartedAt()).isEqualTo(toUtc(createTaskDto.getStartedAt()));
+        softAssertions.assertAll();
     }
 
     @Test
@@ -186,5 +192,9 @@ class TaskControllerTest extends BaseIT {
 
     private static ValidationErrorResponse getValidationErrorResponse(String error) {
         return new ValidationErrorResponse(List.of(error));
+    }
+
+    private static OffsetDateTime toUtc(OffsetDateTime date) {
+        return date.toInstant().atOffset(ZoneOffset.UTC);
     }
 }
