@@ -5,6 +5,7 @@ import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.jdbc.Sql;
 import ru.solarlab.study.dto.Status;
 import ru.solarlab.study.dto.TaskCreateDto;
 import ru.solarlab.study.dto.TaskDto;
@@ -23,6 +24,7 @@ class TaskControllerTest extends BaseIT {
     public static final String ID_FIELD = "id";
     public static final String TASKS_URL = "v1/tasks/";
     public static final String TASKS_BY_NAME_URL = "v1/tasks-by-name-like/";
+    public static final int FROM_SQL_TASK_ID = 100;
 
     @Test
     void getTaskByIdSuccess() {
@@ -36,6 +38,21 @@ class TaskControllerTest extends BaseIT {
                 .usingRecursiveComparison()
                 .ignoringFields(STARTED_AT_FIELD)
                 .isEqualTo(MIGRATION_TASK_DTO);
+    }
+
+    @Test
+    @Sql("sql/data.sql")
+    void getTaskByIdInsertedBySqlSuccess() {
+        TaskDto response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .when().get(TASKS_URL + FROM_SQL_TASK_ID).then()
+                .assertThat().statusCode(HttpStatus.SC_OK)
+                .extract().as(TaskDto.class);
+
+        assertThat(response)
+                .usingRecursiveComparison()
+                .ignoringFields(STARTED_AT_FIELD)
+                .isEqualTo(getTaskDto(FROM_SQL_TASK_ID, "Sql Task", null, Status.NEW));
     }
 
     @Test
