@@ -9,6 +9,7 @@ import ru.solarlab.study.dto.TaskDto;
 import ru.solarlab.study.dto.TaskUpdateDto;
 import ru.solarlab.study.entity.Task;
 import ru.solarlab.study.mapper.TaskMapper;
+import ru.solarlab.study.rabbitmq.QueueSender;
 import ru.solarlab.study.repository.TaskRepository;
 
 import java.util.List;
@@ -20,9 +21,10 @@ import java.util.stream.StreamSupport;
 @Data
 public class TaskService {
 
+    private static final int DEFAULT_PAGE_SIZE = 10;
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
-    private static final int DEFAULT_PAGE_SIZE = 10;
+    private final QueueSender queueSender;
 
     public List<TaskDto> getTasks(Integer limit) {
         return taskRepository.findAll(PageRequest.of(0, limit == null ? DEFAULT_PAGE_SIZE : limit)).stream()
@@ -51,6 +53,7 @@ public class TaskService {
     public TaskDto create(TaskCreateDto request) {
         Task task = taskMapper.toTask(request);
         taskRepository.save(task);
+        queueSender.send(task);
         return taskMapper.taskToTaskDto(task);
     }
 

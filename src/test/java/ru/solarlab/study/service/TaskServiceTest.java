@@ -7,9 +7,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.ActiveProfiles;
 import ru.solarlab.study.dto.Status;
 import ru.solarlab.study.dto.TaskCreateDto;
 import ru.solarlab.study.dto.TaskDto;
@@ -17,6 +19,7 @@ import ru.solarlab.study.dto.TaskUpdateDto;
 import ru.solarlab.study.entity.Task;
 import ru.solarlab.study.mapper.TaskMapper;
 import ru.solarlab.study.mapper.TaskMapperImpl;
+import ru.solarlab.study.rabbitmq.QueueSender;
 import ru.solarlab.study.repository.TaskRepository;
 
 import java.time.OffsetDateTime;
@@ -37,6 +40,9 @@ class TaskServiceTest {
 
     @Mock
     private TaskRepository taskRepository;
+
+    @Mock
+    private QueueSender queueSender;
 
     @Spy
     private TaskMapper taskMapper = new TaskMapperImpl();

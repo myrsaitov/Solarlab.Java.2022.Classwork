@@ -8,7 +8,12 @@ logging:
 
 spring:
   flyway:
-    enabled: false
+    enabled: true
+    user: postgres
+    password: password
+    schemas: task
+    createSchemas: false
+    driver-class-name: org.postgresql.Driver
   application:
     name: study
   mvc:
@@ -16,13 +21,30 @@ spring:
       matching-strategy: ant_path_matcher
   jackson:
     date-format: com.fasterxml.jackson.databind.util.ISO8601DateFormat
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/task_db?currentSchema=task
     username: postgres
     password: password
-  #jpa.hibernate.ddl-auto: update
+  jpa.hibernate.ddl-auto: update
   jpa.database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
+    listener:
+      simple:
+        retry:
+          enabled: true
+          initial-interval: 5000
+          max-attempts: 10
+          max-interval: 30000
+          multiplier: 3.0
+
 
 springfox:
   documentation:
