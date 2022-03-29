@@ -23,12 +23,10 @@ public class QueueConsumer {
     @RabbitListener(queues = "queue1")
     public void receive(final Task task) throws InterruptedException {
         log.info("receive 1: {}", task);
-        Thread.sleep(100 * random.nextInt(20));
     }
 
-    @RabbitListener(queues = "queue1")
+    @RabbitListener(queues = "queue2")
     public void receive2(final Task task) throws InterruptedException {
         log.info("receive2: {}", task);
-        Thread.sleep(100 * random.nextInt(20));
     }
 }

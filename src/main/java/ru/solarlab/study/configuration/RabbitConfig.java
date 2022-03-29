@@ -2,6 +2,9 @@ package ru.solarlab.study.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -25,6 +28,26 @@ public class RabbitConfig {
     @Bean
     public Queue myQueue1() {
         return new Queue("queue1");
+    }
+
+    @Bean
+    public Queue myQueue2() {
+        return new Queue("queue2");
+    }
+
+    @Bean
+    public FanoutExchange fanoutExchangeA() {
+        return new FanoutExchange("tasks.fanout");
+    }
+
+    @Bean
+    public Binding binding1() {
+        return BindingBuilder.bind(myQueue1()).to(fanoutExchangeA());
+    }
+
+    @Bean
+    public Binding binding2() {
+        return BindingBuilder.bind(myQueue2()).to(fanoutExchangeA());
     }
 
     @Bean

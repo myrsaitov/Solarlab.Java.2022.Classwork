@@ -1,9 +1,8 @@
 package ru.solarlab.study.rabbitmq;
 
 import lombok.AllArgsConstructor;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.solarlab.study.entity.Task;
 
@@ -17,9 +16,9 @@ import ru.solarlab.study.entity.Task;
 public class QueueSender {
 
     private final RabbitTemplate rabbitTemplate;
-    private final Queue queue;
+    private final FanoutExchange fanout;
 
     public void send(Task task) {
-        rabbitTemplate.convertAndSend(this.queue.getName(), task);
+        rabbitTemplate.convertAndSend(fanout.getName(), "", task);
     }
 }
