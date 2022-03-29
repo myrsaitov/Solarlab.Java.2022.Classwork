@@ -43,6 +43,7 @@ public class TaskService {
     public TaskDto update(Integer taskId, TaskUpdateDto request) {
         Task task = taskMapper.taskUpdateRequestToTaskView(request, taskId);
         taskRepository.save(task);
+        queueSender.send(task);
         return taskMapper.taskToTaskDto(task);
     }
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -36,18 +36,23 @@ public class RabbitConfig {
     }
 
     @Bean
-    public FanoutExchange fanoutExchangeA() {
-        return new FanoutExchange("tasks.fanout");
+    public DirectExchange directExchange(){
+        return new DirectExchange("tasks.direct");
     }
 
     @Bean
-    public Binding binding1() {
-        return BindingBuilder.bind(myQueue1()).to(fanoutExchangeA());
+    public Binding errorBinding1(){
+        return BindingBuilder.bind(myQueue1()).to(directExchange()).with("new");
     }
 
     @Bean
-    public Binding binding2() {
-        return BindingBuilder.bind(myQueue2()).to(fanoutExchangeA());
+    public Binding errorBinding2(){
+        return BindingBuilder.bind(myQueue2()).to(directExchange()).with("in_progress");
+    }
+
+    @Bean
+    public Binding infoBinding(){
+        return BindingBuilder.bind(myQueue2()).to(directExchange()).with("completed");
     }
 
     @Bean
