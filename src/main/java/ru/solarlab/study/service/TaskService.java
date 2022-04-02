@@ -20,9 +20,10 @@ import java.util.stream.StreamSupport;
 @Data
 public class TaskService {
 
+    private static final int DEFAULT_PAGE_SIZE = 10;
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
-    private static final int DEFAULT_PAGE_SIZE = 10;
+    private final ProducerService producerService;
 
     public List<TaskDto> getTasks(Integer limit) {
         return taskRepository.findAll(PageRequest.of(0, limit == null ? DEFAULT_PAGE_SIZE : limit)).stream()
@@ -41,6 +42,7 @@ public class TaskService {
     public TaskDto update(Integer taskId, TaskUpdateDto request) {
         Task task = taskMapper.taskUpdateRequestToTaskView(request, taskId);
         taskRepository.save(task);
+        producerService.sendMessage(task);
         return taskMapper.taskToTaskDto(task);
     }
 
@@ -51,6 +53,7 @@ public class TaskService {
     public TaskDto create(TaskCreateDto request) {
         Task task = taskMapper.toTask(request);
         taskRepository.save(task);
+        producerService.sendMessage(task);
         return taskMapper.taskToTaskDto(task);
     }
 

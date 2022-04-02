@@ -1,5 +1,7 @@
 package ru.solarlab.study.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,20 +25,20 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @ExtendWith(MockitoExtension.class)
 class TaskServiceTest {
 
-    private static final Integer LIMIT = 20;
-    private static final Integer DEFAULT_LIMIT = 10;
     public static final int TASK_ID = 1;
     public static final String TASK_NAME = "task";
     public static final OffsetDateTime TASK_STARTED_AT = OffsetDateTime.now();
     public static final Status TASK_STATUS = Status.NEW;
-
+    private static final Integer LIMIT = 20;
+    private static final Integer DEFAULT_LIMIT = 10;
     @Mock
     private TaskRepository taskRepository;
+
+    @Mock
+    private ProducerService producerService;
 
     @Spy
     private TaskMapper taskMapper = new TaskMapperImpl();

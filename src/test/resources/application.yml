@@ -6,3 +6,8 @@ spring:
     password: postgres
   #jpa.hibernate.ddl-auto: update
   jpa.database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+kafka:
+  bootstrapAddress: localhost:9092
+  topic: tasks
+  groupId: group-1
