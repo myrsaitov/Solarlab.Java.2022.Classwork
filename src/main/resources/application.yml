@@ -6,6 +6,10 @@ logging:
     ROOT: INFO
     org.springframework: INFO
 
+aspect:
+  logging:
+    enabled: true
+
 spring:
   flyway:
     enabled: false
