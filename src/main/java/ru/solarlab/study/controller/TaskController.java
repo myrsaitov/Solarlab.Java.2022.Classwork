@@ -9,8 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.solarlab.study.dto.TaskDto;
 import ru.solarlab.study.dto.TaskCreateDto;
+import ru.solarlab.study.dto.TaskDto;
 import ru.solarlab.study.dto.TaskUpdateDto;
 import ru.solarlab.study.service.TaskService;
 
@@ -48,7 +48,17 @@ public class TaskController {
     public ResponseEntity<List<TaskDto>> getTasksByNameLike(
             @Parameter(description = "Строка поиска")
             @RequestParam(value = "nameLike") String nameLike) {
-        return ResponseEntity.ok(taskService.getByNameLike('%'+ nameLike +'%'));
+        return ResponseEntity.ok(taskService.getByNameLike('%' + nameLike + '%'));
+    }
+
+    @Operation(description = "Получение списка всех задач")
+    @GetMapping(
+            value = "/v1/tasks/all",
+            produces = {"application/json"}
+    )
+    public ResponseEntity<List<TaskDto>> getAllTasks() {
+
+        return ResponseEntity.ok(taskService.getTasks());
     }
 
     @Operation(description = "Получение задачи")
